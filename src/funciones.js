@@ -1,26 +1,22 @@
-import '/style.css'
-import * as T from 'three'
+import '/style.css';
+import * as T from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { generarVertices } from "./utils";
 
-const scene = new T.Scene()
-scene.background = new T.Color
-// scene.background = new T.Color(0xb5b5b5)
-const axes = new T.AxesHelper(5)
-// scene.add(axes)
+const scene = new T.Scene();
+scene.background = new T.Color(0xb5b5b5);
 
-const camera =  new T.PerspectiveCamera(70,window.innerWidth/window.innerHeight,0.1,1000);
-camera.position.set(8,9,8)
+const camera = new T.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(8, 9, 8);
 
-const renderer = new T.WebGLRenderer;
-renderer.setSize(window.innerWidth,window.innerHeight);
-document.body.appendChild(renderer.domElement)
+const renderer = new T.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-const controls = new OrbitControls(camera, renderer.domElement)
+const controls = new OrbitControls(camera, renderer.domElement);
 
 const vertices = generarVertices(5);
-// console.log(vertices);
-//!
+
 // Crear un buffer geometry
 const geometry = new T.BufferGeometry();
 
@@ -28,19 +24,29 @@ const geometry = new T.BufferGeometry();
 const positions = new Float32Array(vertices);
 geometry.setAttribute('position', new T.BufferAttribute(positions, 3));
 
+// Crear las caras (triángulos) para la geometría del círculo
+const indices = [];
+const numVertices = vertices.length / 3;
+for (let i = 1; i < numVertices - 1; i++) {
+    indices.push(0, i, i + 1);
+}
+
+// Crear un buffer attribute para los índices
+geometry.setIndex(new T.BufferAttribute(new Uint16Array(indices), 1));
+
 // Crear el material para el círculo
 const material = new T.MeshBasicMaterial({ color: 0xffff00, side: T.DoubleSide });
 
 // Crear la malla
 const circleMesh = new T.Mesh(geometry, material);
-console.log(circleMesh.geometry);
+
 // Configuración de la escena
 scene.add(circleMesh);
 
 const animate = () => {
-    requestAnimationFrame(animate)
-    renderer.render(scene, camera)
-    controls.update()
-}
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+    controls.update();
+};
 
-animate()
+animate();
