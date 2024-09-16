@@ -3,14 +3,14 @@ import * as T from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { generarVertices } from "./utils";
 
+const renderSize = 500;
 const scene = new T.Scene();
-scene.background = new T.Color(0xb5b5b5);
 
-const camera = new T.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(8, 9, 8);
+const camera = new T.PerspectiveCamera(70, 1, 0.1, 1000);
+camera.position.set(0,0,5);
 
 const renderer = new T.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(renderSize,renderSize);
 document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -27,20 +27,23 @@ geometry.setAttribute('position', new T.BufferAttribute(positions, 3));
 // Crear las caras (triángulos) para la geometría del círculo
 const indices = [];
 const numVertices = vertices.length / 3;
-for (let i = 1; i < numVertices - 1; i++) {
-    indices.push(0, i, i + 1);
+// Generar los índices para los triángulos
+// Conectar el centro del círculo (índice 0) con los vértices adyacentes en el borde
+for (let i = 1; i <= numVertices - 1; i++) {
+    // Genera los triángulos entre el centro (índice 0), el vértice actual 'i' 
+    // y el siguiente vértice en la circunferencia.
+    // Usamos (i % (numVertices - 1)) + 1 para que el último vértice 'i' 
+    // se conecte de nuevo al primer vértice del borde, cerrando el polígono.
+    indices.push(0, i, (i % (numVertices - 1)) + 1);
 }
 
 // Crear un buffer attribute para los índices
 geometry.setIndex(new T.BufferAttribute(new Uint16Array(indices), 1));
 
-// Crear el material para el círculo
 const material = new T.MeshBasicMaterial({ color: 0xffff00, side: T.DoubleSide });
 
-// Crear la malla
 const circleMesh = new T.Mesh(geometry, material);
 
-// Configuración de la escena
 scene.add(circleMesh);
 
 const animate = () => {
