@@ -1,7 +1,7 @@
 import '/style.css';
 import * as T from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { generarVertices } from "./utils";
+import { generarIndices, generarVertices } from "./utils";
 
 const renderSize = 500;
 const scene = new T.Scene();
@@ -25,17 +25,7 @@ const positions = new Float32Array(vertices);
 geometry.setAttribute('position', new T.BufferAttribute(positions, 3));
 
 // Crear las caras (triángulos) para la geometría del círculo
-const indices = [];
-const numVertices = vertices.length / 3;
-// Generar los índices para los triángulos
-// Conectar el centro del círculo (índice 0) con los vértices adyacentes en el borde
-for (let i = 1; i <= numVertices - 1; i++) {
-    // Genera los triángulos entre el centro (índice 0), el vértice actual 'i' 
-    // y el siguiente vértice en la circunferencia.
-    // Usamos (i % (numVertices - 1)) + 1 para que el último vértice 'i' 
-    // se conecte de nuevo al primer vértice del borde, cerrando el polígono.
-    indices.push(0, i, (i % (numVertices - 1)) + 1);
-}
+const indices = generarIndices(vertices);
 
 // Crear un buffer attribute para los índices
 geometry.setIndex(new T.BufferAttribute(new Uint16Array(indices), 1));
