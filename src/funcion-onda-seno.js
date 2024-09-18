@@ -15,8 +15,8 @@ const renderer = new T.WebGLRenderer();
 renderer.setSize(width, height);
 document.body.appendChild(renderer.domElement);
 
-// const controls = new OrbitControls(camera, renderer.domElement);
-// controls.enableDamping = true;
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
 
 const geometry = new T.BufferGeometry();
 const material = new T.MeshBasicMaterial({ color: 0xffff00, side: T.DoubleSide, wireframe: true });
@@ -26,10 +26,11 @@ const mesh = new T.Mesh(geometry, material);
 scene.add(mesh);
 
 let tiempo = 0;
+let velocidadAnimacion = 0.05
 
 //Actualizamos la geometría
 const updateGeometry = () => {
-    tiempo += 0.05;
+    tiempo = (tiempo + velocidadAnimacion) % (2 * Math.PI); // Ciclo entre 0 y 2*PI
 
     const vertices = generarVerticesOnda(tiempo);
     const indices = generarIndicesOnda();

@@ -27,21 +27,22 @@ export const generarIndices = (vertices) => {
     }
     return indices;
 }
-const anchoVisible = 15;
-const alto = 3;
-const segmentosX = 30;
-const amplitud = 2;
-const frecuencia = 1;
+
+const anchoVisible = 30;
+const altoRectangulo = 6;
+const numRectangulos = 20;
+const amplitud = 3;
+const frecuencia = 0.5;
 
 export const generarVerticesOnda = (tiempo) => {
     const vertices = [];
-    const pasoX = anchoVisible / segmentosX; // Espaciado entre rectángulos en "x"
+    const pasoX = anchoVisible / numRectangulos; // Espaciado entre rectángulos en "x"
     const z = 0;  
 
-    for (let i = 0; i <= segmentosX; i++) {
+    for (let i = 0; i <= numRectangulos; i++) {
         const x = i * pasoX - anchoVisible / 2;  // Posición fija en el eje X
-        const ySuperior = alto / 2 + Math.sin(frecuencia * x + tiempo) * amplitud; // Onda senoidal en Y
-        const yInferior = -alto / 2 + Math.sin(frecuencia * x + tiempo) * amplitud;
+        const ySuperior = altoRectangulo / 2 + Math.sin(frecuencia * x + tiempo) * amplitud; // Onda senoidal en Y
+        const yInferior = -altoRectangulo / 2 + Math.cos(frecuencia * x + tiempo - (Math.PI/2)) * amplitud;
 
         vertices.push(x, ySuperior, z);  // Vértice superior izquierdo
         vertices.push(x, yInferior, z);  // Vértice inferior izquierdo
@@ -54,7 +55,7 @@ export const generarVerticesOnda = (tiempo) => {
 
 export const generarIndicesOnda = () => {
     const indices = [];
-    for (let i = 0; i < segmentosX; i++) {
+    for (let i = 0; i < numRectangulos; i++) {
         const a = i * 4;      // Vértice superior izquierdo del rectángulo
         const b = a + 1;      // Vértice inferior izquierdo del rectángulo
         const c = a + 2;      // Vértice superior derecho del rectángulo
